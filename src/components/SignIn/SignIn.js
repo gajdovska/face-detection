@@ -1,4 +1,5 @@
 import React from 'react';
+import environment from '../../environment';
 
 class SignIn extends React.Component {
   constructor(props) {
@@ -18,7 +19,7 @@ class SignIn extends React.Component {
   };
 
   onSubmitSignIn = () => {
-    fetch("http://localhost:3000/signin", {
+    fetch(`${environment.apiURL}/signin`, {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

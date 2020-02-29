@@ -9,6 +9,8 @@ import Particles from 'react-particles-js';
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
 
+import environment from './environment';
+
 const initialState={
   input: '',
   imageUrl: '',
@@ -70,7 +72,7 @@ onRouteChange=(route)=>{
 }
   onSubmit = () => {
     this.setState({ imageUrl: this.state.input });
-    fetch('http://localhost:3000/imageurl', {
+    fetch(`${environment.apiURL}/imageurl`, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -79,7 +81,7 @@ onRouteChange=(route)=>{
     }).then(response=>response.json())
       .then(response => {
         if (response) {
-          fetch('http://localhost:3000/image', {
+          fetch(`${environment.apiURL}/image`, {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
