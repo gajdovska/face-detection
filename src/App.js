@@ -14,7 +14,7 @@ import environment from './environment';
 const initialState={
   input: '',
   imageUrl: '',
-  box: {},
+  boxes: [],
   route: 'signin',
   isSignedIn: false,
   user: {
@@ -46,21 +46,23 @@ onInputChange=(event)=>{
   this.setState({input:event.target.value});
 }
 calculateFaceLocation=(data)=>{
-
-   const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+   console.log(data);
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
     const height = Number(image.height);
-    return {
-      leftCol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightCol: width - (clarifaiFace.right_col * width),
-      bottomRow: height - (clarifaiFace.bottom_row * height)
-  }
+    return data.outputs[0].data.regions.map(region => {
+      const clarifaiFace  = region.region_info.bounding_box;
+      return {
+        leftCol: clarifaiFace.left_col * width,
+        topRow: clarifaiFace.top_row * height,
+        rightCol: width - (clarifaiFace.right_col * width),
+        bottomRow: height - (clarifaiFace.bottom_row * height)
+      };
+    });
 }
-displayFaceBox=(box)=>{
-  console.log(box);
-  this.setState({box:box});
+displayFaceBox=(boxes)=>{
+  console.log(boxes);
+  this.setState({boxes:boxes});
 }
 onRouteChange=(route)=>{
   if(route==='signout'){
@@ -98,8 +100,9 @@ onRouteChange=(route)=>{
       })
       .catch(err => console.log(err));
   }
-render(){
-  const { isSignedIn, imageUrl, route, box } = this.state;
+
+  render(){
+  const { isSignedIn, imageUrl, route, boxes } = this.state;
   return (
     <div className="App">
       <Particles className='particles'
@@ -128,7 +131,7 @@ render(){
             onInputChange={this.onInputChange}
             onSubmit={this.onSubmit}
           />
-          <FaceRecognition box={box} imageUrl={imageUrl} />
+          <FaceRecognition boxes={boxes} imageUrl={imageUrl} />
         </div>
         : (
           route === 'signin'
